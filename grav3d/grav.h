@@ -1,10 +1,12 @@
 #pragma once
 
 #define G 6.67384e-11
-#define NumOfColors 3
 #define SQRT2 1.414213562373095048802
 #define SQRT3 1.732050807568877293527
 #define PI 3.14159265358979323846
+
+#define NUMOFMOLECULES 1024
+#define COULOMB 1
 
 /* Debug memory allocation support */
 #ifdef _DEBUG

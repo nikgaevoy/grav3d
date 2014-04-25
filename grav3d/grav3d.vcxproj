@@ -81,6 +81,7 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="graphics.h" />
     <ClInclude Include="grav.h" />
     <ClInclude Include="molecule.h" />
     <ClInclude Include="rand.h" />

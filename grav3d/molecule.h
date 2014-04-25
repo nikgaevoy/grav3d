@@ -7,6 +7,16 @@
 
 using namespace std;
 
+template <class T = double>
+  int sign (T x)
+  {
+    if (x > 0)
+      return 1;
+    if (x < 0)
+      return -1;
+    return 0;
+  }
+
 class molecule 
 {
   double mass;
@@ -28,20 +38,40 @@ public:
     : Pos (P), mass (m), Speed (S)
   {}
 
-  void move (vector<molecule> m, double delta_t)
+  void grav (vector<molecule> m, double delta_t)
   {
     vec<double> newPos;
 
     molecule::newPos = molecule::Pos + molecule::Speed * delta_t;
     molecule::newSpeed = molecule::Speed;
 
-    for (unsigned int i = 0; i < m.size(); i++)
+    for (unsigned int i = 0; i < m.size (); i++)
     {
       vec<double> tmp = m[i].Pos - molecule::Pos;
 
-      if (tmp.len2() != 0)
+      if (tmp.len2 () != 0)
       {
-        tmp *= G * delta_t * m[i].mass / tmp.len2();
+        tmp *= G * delta_t * m[i].mass / tmp.len2 ();
+        molecule::newPos += tmp * delta_t / 2;
+        molecule::newSpeed += tmp;
+      }
+    }
+  }
+
+  void Coulomb (vector<molecule> m, double delta_t)
+  {
+    vec<double> newPos;
+
+    molecule::newPos = molecule::Pos + molecule::Speed * delta_t;
+    molecule::newSpeed = molecule::Speed;
+
+    for (unsigned int i = 0; i < m.size (); i++)
+    {
+      vec<double> tmp = m[i].Pos - molecule::Pos;
+
+      if (tmp.len2 () != 0)
+      {
+        tmp *= - G * delta_t * m[i].mass * sign(mass) / tmp.len2 ();
         molecule::newPos += tmp * delta_t / 2;
         molecule::newSpeed += tmp;
       }
