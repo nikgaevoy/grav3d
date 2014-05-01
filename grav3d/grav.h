@@ -6,7 +6,6 @@
 #define PI 3.14159265358979323846
 
 #define NUMOFMOLECULES 1024
-#define COULOMB 1
 
 /* Debug memory allocation support */
 #ifdef _DEBUG

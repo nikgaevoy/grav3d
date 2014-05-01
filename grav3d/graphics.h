@@ -17,7 +17,7 @@ int Width = 1024, Height = 780;
 timer MainTimer;
 vector<molecule> dots;
 double Depth = 9000, Scale = 3000, Speed = 0.05, wh, RotateSpeed = 5;
-bool drawLines = true;
+bool drawLines = true, CoulombModel = true;
 
 void Display ()
 {
@@ -79,14 +79,12 @@ void Idle ()
 
   if (!MainTimer.getIsPause ())
   {
-    for (i = 0; i < dots.size (); i++)
-    {
-#if COULOMB
-      dots[i].Coulomb (dots, Speed * MainTimer.getDeltaTime ());
-#else
-      dots[i].grav (dots, Speed * MainTimer.getDeltaTime ());
-#endif
-    }
+    if (CoulombModel)
+      for (i = 0; i < dots.size (); i++)
+        dots[i].Coulomb (dots, Speed * MainTimer.getDeltaTime ());
+    else
+      for (i = 0; i < dots.size (); i++)
+        dots[i].grav (dots, Speed * MainTimer.getDeltaTime ());
 
     for (i = 0; i < dots.size (); i++)
       dots[i].update ();
@@ -150,6 +148,23 @@ void Keyboard (unsigned char key, int x, int y)
     drawLines = !drawLines;
     break;
 
+  case 'R':
+  case 'r':
+    dots.clear ();
+    CoulombModel = !CoulombModel;
+    if (CoulombModel)
+      for (int i = 0; i < NUMOFMOLECULES; i++)
+        dots.push_back (molecule (rand11 () * 1e16, vecgenerate () * 1000));
+    else
+      for (int i = 0; i < NUMOFMOLECULES; i++)
+        dots.push_back (molecule (rand01 () * 1e16, vecgenerate () * 1000));
+    break;
+
+  case 'F':
+  case 'f':
+    glutFullScreen ();
+    break;
+
   case '-':
     Speed /= 2;
     break;
@@ -159,9 +174,7 @@ void Keyboard (unsigned char key, int x, int y)
     break;
   }
 }
-
-
-
+        
 void Reshape (int width, int height)
 {
   glViewport (0, 0, Width = width, Height = height);
@@ -173,14 +186,12 @@ void Reshape (int width, int height)
 
 void Init (int *__argc, char *__argv[])
 {
-  for (int i = 0; i < NUMOFMOLECULES; i++)
-  {
-#if COULOMB
-    dots.push_back (molecule (rand11 () * 1e16, vecgenerate () * 1000));
-#else
-    dots.push_back (molecule (rand01 () * 1e16, vecgenerate () * 1000));
-#endif
-  }
+  if (CoulombModel)
+    for (int i = 0; i < NUMOFMOLECULES; i++)
+      dots.push_back (molecule (rand11 () * 1e16, vecgenerate () * 1000));
+  else
+    for (int i = 0; i < NUMOFMOLECULES; i++)
+      dots.push_back (molecule (rand01 () * 1e16, vecgenerate () * 1000));
 
   glutInit (__argc, __argv);
   glutInitDisplayMode (GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
